@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoML Agent | Transform Your Data into Production-Ready AI Models</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --google-blue: #4285F4;
+            --google-red: #EA4335;
+            --google-yellow: #FBBC04;
+            --google-green: #34A853;
+            --dark-bg: #0B0F19;
+            --card-bg: #111827;
+            --card-hover: #1F2937;
+            --text-primary: #F9FAFB;
+            --text-secondary: #E5E7EB;
+            --text-muted: #9CA3AF;
+            --border-color: #374151;
+            --gradient-google: linear-gradient(135deg, var(--google-blue) 0%, var(--google-green) 50%, var(--google-yellow) 100%);
+            --navbar-height: 70px;
+            --section-padding: 80px;
+            --card-padding: 32px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-secondary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-padding-top: var(--navbar-height);
+            font-size: 15px;
+        }
+
+        /* Optimized Typography System */
+        .display-1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; font-family: 'Outfit', sans-serif; }
+        .display-2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.15; font-family: 'Outfit', sans-serif; }
+        .heading-1 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; line-height: 1.2; }
+        .heading-2 { font-size: clamp(1.5rem, 3.5vw, 2rem); font-weight: 600; line-height: 1.3; }
+        .heading-3 { font-size: clamp(1.125rem, 2.5vw, 1.5rem); font-weight: 600; line-height: 1.3; }
+        .body-large { font-size: clamp(1rem, 2vw, 1.25rem); line-height: 1.6; }
+        .body-medium { font-size: clamp(0.875rem, 1.5vw, 1rem); line-height: 1.5; }
+        .body-small { font-size: clamp(0.8rem, 1.25vw, 0.875rem); line-height: 1.4; }
+        .caption { font-size: clamp(0.75rem, 1vw, 0.8rem); line-height: 1.3; }
+        .code { font-family: 'JetBrains Mono', monospace; font-size: clamp(0.8rem, 1.25vw, 0.875rem); }
+
+        /* Container System */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 clamp(16px, 3vw, 24px);
+        }
+
+        .grid { display: grid; gap: clamp(20px, 3vw, 32px); }
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .grid-4 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+
+        /* Optimized Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--dark-bg);
+            overflow: hidden;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: float 30s infinite linear;
+            will-change: transform;
+        }
+
+        .shape:nth-child(1) {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(66, 133, 244, 0.1) 0%, transparent 70%);
+            top: 10%; left: 5%;
+        }
+        .shape:nth-child(2) {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(52, 168, 83, 0.08) 0%, transparent 70%);
+            top: 50%; right: 10%; animation-direction: reverse;
+        }
+        .shape:nth-child(3) {
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(251, 188, 4, 0.06) 0%, transparent 70%);
+            bottom: 20%; left: 40%;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(11, 15, 25, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(66, 133, 244, 0.2);
+            transition: all 0.3s ease;
+            height: var(--navbar-height);
+        }
+
+        .navbar.scrolled {
+            background: rgba(11, 15, 25, 0.95);
+            box-shadow: 0 8px 32px rgba(66, 133, 244, 0.15);
+            border-bottom-color: rgba(66, 133, 244, 0.4);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 clamp(16px, 3vw, 24px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 900;
+            background: var(--gradient-google);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: clamp(24px, 3vw, 40px);
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 8px 0;
+        }
+
+        .nav-menu a:hover {
+            color: var(--google-blue);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-google);
+            transition: width 0.3s ease;
+            border-radius: 1px;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .mobile-menu-toggle span {
+            width: 24px;
+            height: 3px;
+            background: var(--text-secondary);
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
+        .mobile-menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .mobile-menu-toggle.active span:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(ellipse at center top, rgba(66, 133, 244, 0.15) 0%, transparent 70%);
+            overflow: hidden;
+            padding: var(--navbar-height) 0 var(--section-padding);
+        }
+
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            padding: clamp(20px, 3vw, 40px);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(66, 133, 244, 0.1);
+            border: 2px solid var(--google-blue);
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            color: var(--google-blue);
+            margin-bottom: 40px;
+            backdrop-filter: blur(15px);
+            font-size: 0.9rem;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(66, 133, 244, 0.3); }
+            to { box-shadow: 0 0 40px rgba(66, 133, 244, 0.6); }
+        }
+
+        .hero-title .gradient-text {
+            background: var(--gradient-google);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeInUp 1.2s ease 0.5s forwards;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* CTA Buttons */
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 50px;
+            opacity: 0;
+            animation: fadeInUp 1.2s ease 1.5s forwards;
+        }
+
+        .cta-button {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            overflow: hidden;
+            justify-content: center;
+            min-width: 200px;
+            font-size: 0.95rem;
+        }
+
+        .cta-primary {
+            background: var(--gradient-google);
+            color: white;
+            box-shadow: 0 20px 40px rgba(66, 133, 244, 0.4);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(66, 133, 244, 0.6);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            border: 2px solid var(--google-blue);
+            color: var(--google-blue);
+            backdrop-filter: blur(15px);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(66, 133, 244, 0.15);
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(66, 133, 244, 0.4);
+        }
+
+        /* Sections */
+        .section {
+            padding: var(--section-padding) 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: clamp(60px, 8vw, 100px);
+        }
+
+        .section-title {
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient-google);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 24px auto 0;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            background: linear-gradient(135deg, rgba(234, 67, 53, 0.05) 0%, rgba(66, 133, 244, 0.05) 100%);
+            border-top: 2px solid rgba(234, 67, 53, 0.3);
+            border-bottom: 2px solid rgba(66, 133, 244, 0.3);
+        }
+
+        .problem-stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .problem-stat {
+            flex: 1;
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .problem-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--google-red), var(--google-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            line-height: 1;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: rgba(31, 41, 55, 0.4);
+            border-top: 2px solid rgba(66, 133, 244, 0.3);
+            border-bottom: 2px solid rgba(66, 133, 244, 0.3);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: var(--card-padding);
+            background: rgba(66, 133, 244, 0.05);
+            border-radius: 20px;
+            border: 2px solid rgba(66, 133, 244, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-8px);
+            border-color: var(--google-blue);
+            box-shadow: 0 20px 40px rgba(66, 133, 244, 0.3);
+        }
+
+        .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 900;
+            background: var(--gradient-google);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            line-height: 1;
+            margin-bottom: 16px;
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(75, 85, 99, 0.6);
+            border-radius: 24px;
+            padding: var(--card-padding);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-google);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: var(--google-blue);
+            box-shadow: 0 30px 60px rgba(66, 133, 244, 0.25);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            margin-bottom: 24px;
+            display: block;
+            background: var(--gradient-google);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+        }
+
+        .feature-card h4 {
+            color: var(--text-primary);
+            margin-bottom: 18px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+        }
+
+        .highlight-text {
+            color: var(--google-blue);
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            padding: 2px 6px;
+            background: rgba(66, 133, 244, 0.1);
+            border-radius: 4px;
+        }
+
+        /* Process Section */
+        .process-section {
+            background: rgba(17, 24, 39, 0.5);
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .process-step {
+            background: rgba(31, 41, 55, 0.8);
+            border: 2px solid rgba(66, 133, 244, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .process-step:hover {
+            transform: translateY(-8px);
+            border-color: var(--google-blue);
+            box-shadow: 0 20px 40px rgba(66, 133, 244, 0.2);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-google);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: white;
+            margin: 0 auto 20px;
+        }
+
+        /* Architecture Section */
+        .architecture-section {
+            background: rgba(17, 24, 39, 0.8);
+        }
+
+        .architecture-overview {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.95) 100%);
+            border: 2px solid var(--google-blue);
+            border-radius: 24px;
+            padding: var(--card-padding);
+            margin: 50px 0;
+            position: relative;
+        }
+
+        .mermaid-container {
+            background: linear-gradient(135deg, #0D1117 0%, #161B22 100%);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: var(--card-padding);
+            overflow: hidden;
+            position: relative;
+            margin: 50px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .architecture-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 50px;
+        }
+
+        .arch-feature {
+            background: rgba(66, 133, 244, 0.05);
+            border: 2px solid rgba(66, 133, 244, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .arch-feature:hover {
+            border-color: var(--google-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(66, 133, 244, 0.2);
+        }
+
+        /* ROI Section */
+        .roi-section {
+            background: linear-gradient(135deg, rgba(52, 168, 83, 0.04) 0%, rgba(66, 133, 244, 0.06) 100%);
+        }
+
+        .roi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 50px;
+        }
+
+        .roi-card {
+            background: rgba(31, 41, 55, 0.8);
+            border: 2px solid rgba(52, 168, 83, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .roi-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--google-green);
+            box-shadow: 0 20px 40px rgba(52, 168, 83, 0.2);
+        }
+
+        /* Final CTA */
+        .final-cta-box {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.95) 100%);
+            backdrop-filter: blur(25px);
+            border: 2px solid var(--google-blue);
+            border-radius: 28px;
+            padding: clamp(60px, 10vw, 80px) var(--card-padding);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 80px rgba(66, 133, 244, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(11, 15, 25, 0.98);
+            border-top: 2px solid rgba(66, 133, 244, 0.3);
+            padding: 60px 0 40px;
+        }
+
+        .footer-section h4 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--google-blue);
+            transform: translateX(5px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle { display: flex; }
+
+            .nav-menu {
+                position: fixed;
+                top: var(--navbar-height);
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - var(--navbar-height));
+                background: rgba(11, 15, 25, 0.98);
+                backdrop-filter: blur(25px);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 40px;
+                gap: 30px;
+                transition: left 0.3s ease;
+            }
+
+            .nav-menu.active { left: 0; }
+
+            .nav-menu a {
+                font-size: 1.1rem;
+                padding: 12px 0;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .cta-button {
+                width: 280px;
+            }
+
+            .problem-stats {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .problem-stat {
+                min-width: auto;
+            }
+
+            html {
+                font-size: 14px;
+            }
+
+            body {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .architecture-features {
+                grid-template-columns: 1fr;
+            }
+
+            .roi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+
+            html {
+                font-size: 13px;
+            }
+
+            body {
+                font-size: 13px;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+        }
+
+        /* Performance Optimizations */
+        .shape {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        .feature-card, .roi-card, .process-step {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="nav-logo">AutoML Agent</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#problem">Problem</a></li>
+                <li><a href="#solution">Solution</a></li>
+                <li><a href="#process">How It Works</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#roi">ROI</a></li>
+                <li><a href="#contact">Get Started</a></li>
+            </ul>
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    🤖 Powered by Google Cloud • 🚀 Zero-Code ML Development
+                </div>
+                <h1 class="hero-title display-1">
+                    Your Personal <span class="gradient-text">AI Data Scientist</span><br>
+                    That Never Sleeps
+                </h1>
+                <p class="hero-subtitle body-large">
+                    Simply tell our AI agent what you want to predict, point it to your BigQuery data, and watch it automatically build, test, and deploy production-ready machine learning models. No coding required.
+                </p>
+                <div class="hero-cta">
+                    <a href="#solution" class="cta-button cta-primary">
+                        <span>🎯 See How It Works</span>
+                    </a>
+                    <a href="#roi" class="cta-button cta-secondary">
+                        <span>💰 Calculate Savings</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Statement Section -->
+    <section class="section problem-section" id="problem">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title heading-1">The $500,000$ Machine Learning Problem</h2>
+                <p class="section-subtitle body-large">
+                    Every company has data. Every company wants AI insights. But building ML models requires months of expert work, costs hundreds of thousands, and often fails completely.
+                </p>
+            </div>
+
+            <div class="problem-stats animate-on-scroll">
+                <div class="problem-stat">
+                    <span class="problem-number">80%</span>
+                    <p class="body-medium" style="color: var(--text-muted);">Of data scientist time wasted on manual tasks</p>
+                </div>
+                <div class="problem-stat">
+                    <span class="problem-number">3-6</span>
+                    <p class="body-medium" style="color: var(--text-muted);">Months to build one model manually</p>
+                </div>
+                <div class="problem-stat">
+                    <span class="problem-number">63%</span>
+                    <p class="body-medium" style="color: var(--text-muted);">Of ML projects never reach production</p>
+                </div>
+            </div>
+
+            <div style="background: rgba(234, 67, 53, 0.1); border: 2px solid var(--google-red); border-radius: 20px; padding: var(--card-padding); margin-top: 50px;" class="animate-on-scroll">
+                <h3 class="heading-2" style="color: var(--google-red); margin-bottom: 20px; text-align: center;">
+                    💥 Why Traditional ML Development Fails
+                </h3>
+                <div class="grid grid-3" style="margin-top: 30px;">
+                    <div>
+                        <h5 class="heading-3" style="color: var(--text-primary); margin-bottom: 10px;">⏰ Too Slow</h5>
+                        <p class="body-small" style="color: var(--text-muted);">Months of manual feature engineering, model testing, and optimization. By the time it's ready, business needs have changed.</p>
+                    </div>
+                    <div>
+                        <h5 class="heading-3" style="color: var(--text-primary); margin-bottom: 10px;">💸 Too Expensive</h5>
+                        <p class="body-small" style="color: var(--text-muted);">Senior data scientists cost $150K+ annually. Most companies can't afford dedicated ML teams for every project.</p>
+                    </div>
+                    <div>
+                        <h5 class="heading-3" style="color: var(--text-primary); margin-bottom: 10px;">🤯 Too Complex</h5>
+                        <p class="body-small" style="color: var(--text-muted);">Requires deep expertise in statistics, programming, cloud infrastructure, and domain knowledge. Few people have all these skills.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Stats Section -->
+    <section class="section stats-section">
+        <div class="container">
+            <div class="grid grid-4">
+                <div class="stat-item animate-on-scroll">
+                    <span class="stat-number" data-target="70">70</span>
+                    <span class="stat-label">% Faster Than Manual Development</span>
+                </div>
+                <div class="stat-item animate-on-scroll">
+                    <span class="stat-number" data-target="63">63</span>
+                    <span class="stat-label">% Success Rate on Kaggle Competitions</span>
+                </div>
+                <div class="stat-item animate-on-scroll">
+                    <span class="stat-number" data-target="24">24+</span>
+                    <span class="stat-label">Different Data Sources Supported</span>
+                </div>
+                <div class="stat-item animate-on-scroll">
+                    <span class="stat-number" data-target="500">$500K$</span>
+                    <span class="stat-label">Average Annual Savings Potential</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="solution">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title heading-1">The Solution: An AI That Builds AI</h2>
+                <p class="section-subtitle body-large">
+                    Imagine having a world-class data scientist who works 24/7, never gets tired, knows every ML technique ever published, and costs 90% less than hiring humans.
+                </p>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="feature-card animate-on-scroll">
+                    <span class="feature-icon">🔍</span>
+                    <h4 class="heading-3">Always Learning the Latest</h4>
+                    <p class="body-medium">
+                        Our AI agent <span class="highlight-text">researches the internet</span> in real-time to find the newest,
+                        most effective machine learning techniques for your specific problem. It never uses outdated methods.
+                    </p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <span class="feature-icon">🎯</span>
+                    <h4 class="heading-3">Smart Problem Solving</h4>
+                    <p class="body-medium">
+                        Like a human expert, it <span class="highlight-text">identifies what's not working</span> in your model
+                        and focuses on fixing exactly those parts, not randomly trying everything.
+                    </p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <span class="feature-icon">📊</span>
+                    <h4 class="heading-3">Direct BigQuery Connection</h4>
+                    <p class="body-medium">
+                        Plugs directly into your <span class="highlight-text">existing Google Cloud data</span>.
+                        No data migration, no security risks, no additional infrastructure needed.
+                    </p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <span class="feature-icon">🚀</span>
+                    <h4 class="heading-3">Ready for Production</h4>
+                    <p class="body-medium">
+                        Delivers <span class="highlight-text">clean Python code</span> and trained models
+                        that your team can immediately deploy, modify, and maintain.
+                    </p>
+                </div>
+            </div>
+
+            <div style="background: rgba(52, 168, 83, 0.1); border: 2px solid var(--google-green); border-radius: 20px; padding: var(--card-padding); margin-top: 50px;" class="animate-on-scroll">
+                <h3 class="heading-2" style="color: var(--google-green); margin-bottom: 20px; text-align: center;">
+                    🎯 It's This Simple
+                </h3>
+                <div class="grid grid-2" style="margin-top: 30px;">
+                    <div style="background: rgba(66, 133, 244, 0.1); border: 1px solid var(--google-blue); border-radius: 12px; padding: 20px;">
+                        <h5 class="heading-3" style="color: var(--google-blue); margin-bottom: 15px;">📥 Tell the AI what you want</h5>
+                        <ul style="color: var(--text-muted); padding-left: 20px; line-height: 1.8;">
+                            <li>"Predict which customers will cancel"</li>
+                            <li>"Detect fraudulent transactions"</li>
+                            <li>"Forecast next month's sales"</li>
+                            <li>Point to your BigQuery table</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(52, 168, 83, 0.1); border: 1px solid var(--google-green); border-radius: 12px; padding: 20px;">
+                        <h5 class="heading-3" style="color: var(--google-green); margin-bottom: 15px;">📤 Get production-ready results</h5>
+                        <ul style="color: var(--text-muted); padding-left: 20px; line-height: 1.8;">
+                            <li>Optimized machine learning model</li>
+                            <li>Complete Python pipeline code</li>
+                            <li>Performance analysis reports</li>
+                            <li>Deployment instructions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New: How It Works Process Section -->
+    <section class="section process-section" id="process">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title heading-1">How It Works: 4 Simple Steps</h2>
+                <p class="section-subtitle body-large">
+                    Watch our AI agent transform your business problem into a working ML solution in hours, not months.
+                </p>
+            </div>
+
+            <div class="process-steps">
+                <div class="process-step animate-on-scroll">
+                    <div class="step-number">1</div>
+                    <h4 class="heading-3" style="color: var(--text-primary); margin-bottom: 16px;">Understand Your Problem</h4>
+                    <p class="body-medium" style="color: var(--text-muted);">
+                        You provide a simple description: "Predict customer churn" and point to your BigQuery table.
+                        The AI analyzes your data structure and understands what you're trying to achieve.
+                    </p>
+                </div>
+                <div class="process-step animate-on-scroll">
+                    <div class="step-number">2</div>
+                    <h4 class="heading-3" style="color: var(--text-primary); margin-bottom: 16px;">Research & Plan</h4>
+                    <p class="body-medium" style="color: var(--text-muted);">
+                        The agent searches the internet for the latest techniques, reviews successful approaches
+                        for similar problems, and creates a comprehensive strategy.
+                    </p>
+                </div>
+                <div class="process-step animate-on-scroll">
+                    <div class="step-number">3</div>
+                    <h4 class="heading-3" style="color: var(--text-primary); margin-bottom: 16px;">Build & Optimize</h4>
+                    <p class="body-medium" style="color: var(--text-muted);">
+                        It automatically writes code for data preprocessing, tries multiple ML algorithms,
+                        identifies weak spots, and iteratively improves performance.
+                    </p>
+                </div>
+                <div class="process-step animate-on-scroll">
+                    <div class="step-number">4</div>
+                    <h4 class="heading-3" style="color: var(--text-primary); margin-bottom: 16px;">Deliver Results</h4>
+                    <p class="body-medium" style="color: var(--text-muted);">
+                        You receive clean Python code, a trained model, performance reports,
+                        and step-by-step deployment instructions. Ready for production.
+                    </p>
+                </div>
+            </div>
+
+            <div style="background: rgba(66, 133, 244, 0.1); border: 2px solid var(--google-blue); border-radius: 20px; padding: var(--card-padding); margin-top: 50px; text-align: center;" class="animate-on-scroll">
+                <h3 class="heading-2" style="color: var(--google-blue); margin-bottom: 25px;">
+                    ⚡ Real Example: Customer Churn Model
+                </h3>
+                <div style="background: #000; border-radius: 12px; padding: 20px; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--google-blue); text-align: left;">
+                    <div style="color: var(--google-green); margin-bottom: 10px;">📊 Input: "Predict customer churn using subscription_data table"</div>
+                    <div style="color: var(--google-yellow); margin-bottom: 10px;">🔍 Agent researches latest churn prediction techniques...</div>
+                    <div style="color: var(--google-blue); margin-bottom: 10px;">⚙️ Tests 12 different algorithms, optimizes features...</div>
+                    <div style="color: var(--google-green); margin-bottom: 10px;">✅ Final model: 94% accuracy (vs 82% baseline)</div>
+                    <div style="color: var(--text-secondary);">⏱️ Total time: 3.5 hours (vs 8-12 weeks manual)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Architecture Section -->
+    <section class="section architecture-section" id="architecture">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title heading-1">Built on Google's Enterprise Platform</h2>
+                <p class="section-subtitle body-large">
+                    Powered by the same infrastructure that runs Google Search and Gmail. Enterprise-grade security, unlimited scale, 99.99% uptime.
+                </p>
+            </div>
+
+            <div class="architecture-overview animate-on-scroll">
+                <h3 class="heading-2" style="color: var(--google-blue); margin-bottom: 20px; text-align: center;">
+                    🏗️ What Makes It Possible
+                </h3>
+                <div class="grid grid-3" style="margin-top: 30px;">
+                    <div>
+                        <h5 class="heading-3" style="color: var(--text-primary); margin-bottom: 10px;">🧠 Google AI Technology</h5>
+                        <p class="body-small" style="color: var(--text-muted);">Built on the same AI models powering Google's products. Constantly updated with the latest breakthroughs.</p>
+                    </div>
+                    <div>
+                        <h5 class="heading-3" style="color: var(--text-primary); margin-bottom: 10px;">🛡️ Enterprise Security</h5>
+                        <p class="body-small" style="color: var(--text-muted);">Your data never leaves Google Cloud. Same security standards as Google's own products.</p>
+                    </div>
+                    <div>
+                        <h5 class="heading-3" style="color: var(--text-primary); margin-bottom: 10px;">⚡ Unlimited Scale</h5>
+                        <p class="body-small" style="color: var(--text-muted);">Handles datasets from thousands to billions of rows. Automatically scales compute resources as needed.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mermaid-container animate-on-scroll">
+                <div class="architecture-title heading-3" style="color: var(--google-blue); margin-bottom: 25px; text-align: center;">
+                    🏛️ Simple Architecture, Powerful Results
+                </div>
+                <div class="mermaid">
+                    graph TB
+    %% Clean, simple architecture
+    classDef userLayer fill:#4285f4,stroke:#1565c0,stroke-width:3px,color:#fff,font-weight:bold,font-size:16px
+    classDef aiLayer fill:#34a853,stroke:#2e7d32,stroke-width:3px,color:#fff,font-weight:bold,font-size:16px
+    classDef cloudLayer fill:#ea4335,stroke:#c5221f,stroke-width:3px,color:#fff,font-weight:bold,font-size:16px
+    classDef outputLayer fill:#fbbc04,stroke:#f57c00,stroke-width:3px,color:#000,font-weight:bold,font-size:16px
+
+    %% USER LAYER
+    You["👤<br/><b>YOU</b><br/>Describe what you want<br/>Point to BigQuery table"]
+
+    %% AI AGENT LAYER
+    Agent["🤖<br/><b>AI AGENT</b><br/>• Researches latest ML techniques<br/>• Analyzes your data<br/>• Builds optimal model<br/>• Tests & optimizes"]
+
+    %% GOOGLE CLOUD LAYER
+    subgraph GoogleCloud ["☁️ GOOGLE CLOUD PLATFORM"]
+        BigQuery["📊<br/><b>BigQuery</b><br/>Your Data<br/>(stays secure)"]
+        VertexAI["🧠<br/><b>Vertex AI</b><br/>ML Training<br/>(auto-scaling)"]
+        Storage["💾<br/><b>Cloud Storage</b><br/>Models & Code<br/>(ready to deploy)"]
+    end
+
+    %% OUTPUT LAYER
+    Results["📦<br/><b>YOUR RESULTS</b><br/>• Production-ready Python code<br/>• Trained ML model<br/>• Performance reports<br/>• Deployment guide"]
+
+    %% SIMPLE FLOW
+    You --> Agent
+    Agent --> BigQuery
+    Agent --> VertexAI
+    VertexAI --> Storage
+    Storage --> Results
+    BigQuery --> Agent
+
+    %% Apply styles
+    class You userLayer
+    class Agent aiLayer
+    class BigQuery,VertexAI,Storage cloudLayer
+    class Results outputLayer
+
+    %% Key benefits
+    Agent -.->|"🚀 SMART:<br/>Always uses latest<br/>ML techniques"| VertexAI
+    BigQuery -.->|"🔒 SECURE:<br/>Data never<br/>leaves Google Cloud"| Agent
+                </div>
+            </div>
+
+            <div class="architecture-features animate-on-scroll">
+                <div class="arch-feature">
+                    <h5 class="heading-3" style="color: var(--google-blue); margin-bottom: 12px;">🌐 Always Current</h5>
+                    <p class="body-small" style="color: var(--text-muted);">Continuously learns from the latest research papers and successful ML projects across the internet.</p>
+                </div>
+                <div class="arch-feature">
+                    <h5 class="heading-3" style="color: var(--google-green); margin-bottom: 12px;">🔐 Your Data Stays Safe</h5>
+                    <p class="body-small" style="color: var(--text-muted);">All processing happens within your Google Cloud environment. No data sharing, no privacy risks.</p>
+                </div>
+                <div class="arch-feature">
+                    <h5 class="heading-3" style="color: var(--google-yellow); margin-bottom: 12px;">⚙️ No Setup Required</h5>
+                    <p class="body-small" style="color: var(--text-muted);">Works with your existing BigQuery setup. No new infrastructure, no complex configurations.</p>
+                </div>
+                <div class="arch-feature">
+                    <h5 class="heading-3" style="color: var(--google-red); margin-bottom: 12px;">📈 Scales Automatically</h5>
+                    <p class="body-small" style="color: var(--text-muted);">Handles any data size. Google's infrastructure automatically provides the compute power needed.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROI & Business Case Section -->
+    <section class="section roi-section" id="roi">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title heading-1">The Numbers Don't Lie</h2>
+                <p class="section-subtitle body-large">
+                    Stop spending hundreds of thousands on manual ML development. Get better results for 90% less cost.
+                </p>
+            </div>
+
+            <div class="roi-grid">
+                <div class="roi-card animate-on-scroll">
+                    <h4 class="heading-3" style="color: var(--google-green); margin-bottom: 16px;">💰 Cost Savings</h4>
+                    <div class="stat-number" style="font-size: 2rem; margin-bottom: 10px;">90%</div>
+                    <p class="body-medium" style="color: var(--text-muted);">Less expensive than hiring data scientists. One junior engineer can now do the work of an entire ML team.</p>
+                </div>
+                <div class="roi-card animate-on-scroll">
+                    <h4 class="heading-3" style="color: var(--google-blue); margin-bottom: 16px;">⚡ Speed Improvement</h4>
+                    <div class="stat-number" style="font-size: 2rem; margin-bottom: 10px;">50X</div>
+                    <p class="body-medium" style="color: var(--text-muted);">Faster than manual development. Deploy ML solutions in days instead of months.</p>
+                </div>
+                <div class="roi-card animate-on-scroll">
+                    <h4 class="heading-3" style="color: var(--google-yellow); margin-bottom: 16px;">📊 Better Performance</h4>
+                    <div class="stat-number" style="font-size: 2rem; margin-bottom: 10px;">+15%</div>
+                    <p class="body-medium" style="color: var(--text-muted);">Average improvement over manual approaches by using the latest techniques automatically.</p>
+                </div>
+                <div class="roi-card animate-on-scroll">
+                    <h4 class="heading-3" style="color: var(--google-red); margin-bottom: 16px;">🎯 Success Rate</h4>
+                    <div class="stat-number" style="font-size: 2rem; margin-bottom: 10px;">95%</div>
+                    <p class="body-medium" style="color: var(--text-muted);">Project success rate vs 37% industry average for manual ML development.</p>
+                </div>
+            </div>
+
+            <div style="background: rgba(52, 168, 83, 0.1); border: 2px solid var(--google-green); border-radius: 20px; padding: var(--card-padding); margin-top: 50px;" class="animate-on-scroll">
+                <h3 class="heading-2" style="color: var(--google-green); margin-bottom: 25px; text-align: center;">
+                    📈 Real Cost Comparison
+                </h3>
+                <div class="grid grid-2" style="margin-top: 30px;">
+                    <div>
+                        <h5 class="heading-3" style="color: var(--text-primary); margin-bottom: 15px;">❌ Traditional Approach</h5>
+                        <ul style="color: var(--text-muted); padding-left: 20px; line-height: 1.8;">
+                            <li>Senior Data Scientist: $150K$ annual salary</li>
+                            <li>3-6 months per model</li>
+                            <li>2-3 models per year maximum</li>
+                            <li>High failure rate (63% never reach production)</li>
+                            <li><strong style="color: var(--google-red);">Cost per successful model: $200K+$</strong></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="heading-3" style="color: var(--text-primary); margin-bottom: 15px;">✅ AutoML Agent</h5>
+                        <ul style="color: var(--text-muted); padding-left: 20px; line-height: 1.8;">
+                            <li>Junior Engineer: $80K$ annual salary</li>
+                            <li>2-5 days per model</li>
+                            <li>50+ models per year possible</li>
+                            <li>Very high success rate (95%+)</li>
+                            <li><strong style="color: var(--google-green);">Cost per model: $5K$</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px; padding: 20px; background: rgba(66, 133, 244, 0.1); border-radius: 12px;">
+                    <h4 class="heading-2" style="color: var(--google-blue);">💎 $195K$ Savings Per Model</h4>
+                    <p class="body-large" style="color: var(--text-muted); margin-top: 10px;">Plus 10x more models delivered + guaranteed results</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Demo Section -->
+    <section class="section" id="demo">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title heading-1">See It In Action</h2>
+                <p class="section-subtitle body-large">
+                    Watch how AutoML Agent tackles a real business problem and delivers production-ready results.
+                </p>
+            </div>
+
+            <div style="background: rgba(17, 24, 39, 0.9); border: 2px solid var(--google-blue); border-radius: 20px; padding: var(--card-padding);" class="animate-on-scroll">
+                <h3 class="heading-2" style="color: var(--text-primary); margin-bottom: 25px; text-align: center;">🎯 Live Demo: Predicting Customer Churn</h3>
+
+                <div style="background: #000; border-radius: 12px; padding: 24px; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--google-blue); margin-bottom: 20px;">
+                    <div style="color: var(--google-green); margin-bottom: 12px; font-size: 0.9rem; font-weight: 600;">Business Problem:</div>
+                    <div style="color: var(--text-secondary); line-height: 1.6; margin-left: 20px; font-size: 0.85rem;">
+                        "We're losing customers and don't know why. Can you predict which customers are likely to cancel so we can intervene?"
+                    </div>
+                </div>
+
+                <div style="background: #000; border-radius: 12px; padding: 24px; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--google-green);">
+                    <div style="color: var(--google-green); margin-bottom: 12px; font-size: 0.9rem; font-weight: 600;">AutoML Agent Working:</div>
+                    <div style="color: var(--text-secondary); line-height: 1.6; margin-left: 20px; font-size: 0.85rem;">
+                        <span style="color: var(--google-blue);">[00:01]</span> 🔍 Analyzing customer data in BigQuery...<br>
+                        <span style="color: var(--google-blue);">[00:02]</span> 📊 Found 47 features, 50,000 customers, 18% churn rate<br>
+                        <span style="color: var(--google-blue);">[00:05]</span> 🌐 Researching: "customer churn prediction 2025 best practices"<br>
+                        <span style="color: var(--google-blue);">[00:07]</span> 📚 Found techniques: ensemble methods, feature interaction, temporal patterns<br>
+                        <span style="color: var(--google-blue);">[00:15]</span> ⚙️ Creating features: usage trends, payment patterns, support interactions<br>
+                        <span style="color: var(--google-blue);">[01:30]</span> 🏋️ Training models: XGBoost, CatBoost, Neural Networks<br>
+                        <span style="color: var(--google-blue);">[02:45]</span> 📊 Ablation study: Payment history most predictive<br>
+                        <span style="color: var(--google-blue);">[03:20]</span> 🔄 Optimizing payment-related features...<br>
+                        <span style="color: var(--google-blue);">[04:10]</span> 🎯 Ensemble optimization complete<br><br>
+                        <span style="color: var(--google-green); font-weight: 700;">✅ FINAL RESULTS:</span><br>
+                        • Model Accuracy: <span style="color: var(--google-green); font-weight: 700;">94.2%</span> (vs previous 82%)<br>
+                        • False Positive Rate: <span style="color: var(--google-green); font-weight: 700;">3.1%</span> (excellent)<br>
+                        • Early Detection: <span style="color: var(--google-green); font-weight: 700;">30 days</span> advance warning<br>
+                        • Business Impact: <span style="color: var(--google-yellow); font-weight: 700;">$2.3M</span> annual savings potential<br><br>
+                        <span style="color: var(--google-yellow); font-weight: 700;">📦 DELIVERED:</span><br>
+                        • churn_prediction_pipeline.py (executable code)<br>
+                        • trained_model.pkl (ready for deployment)<br>
+                        • feature_importance.html (business insights)<br>
+                        • deployment_guide.md (step-by-step instructions)
+                    </div>
+                </div>
+
+                <div class="grid grid-3" style="margin-top: 30px;">
+                    <div style="background: rgba(66, 133, 244, 0.1); border: 1px solid var(--google-blue); border-radius: 12px; padding: 20px;">
+                        <h5 class="heading-3" style="color: var(--google-blue); margin-bottom: 10px;">⚡ Time Saved</h5>
+                        <p class="body-small" style="color: var(--text-muted);"><strong>4 hours</strong> vs typical 3-6 months manual development</p>
+                    </div>
+                    <div style="background: rgba(52, 168, 83, 0.1); border: 1px solid var(--google-green); border-radius: 12px; padding: 20px;">
+                        <h5 class="heading-3" style="color: var(--google-green); margin-bottom: 10px;">🎯 Better Results</h5>
+                        <p class="body-small" style="color: var(--text-muted);"><strong>94.2% accuracy</strong> vs previous manual model's 82%</p>
+                    </div>
+                    <div style="background: rgba(251, 188, 4, 0.1); border: 1px solid var(--google-yellow); border-radius: 12px; padding: 20px;">
+                        <h5 class="heading-3" style="color: var(--google-yellow); margin-bottom: 10px;">💰 Business Value</h5>
+                        <p class="body-small" style="color: var(--text-muted);"><strong>$2.3M potential savings</strong> identified automatically</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="final-cta-box animate-on-scroll">
+                <h2 class="display-2" style="color: var(--text-primary); margin-bottom: 35px; line-height: 1.1;">
+                    Ready to Transform Your Business? 🚀
+                </h2>
+                <p class="body-large" style="color: var(--text-muted); margin-bottom: 45px; max-width: 700px; margin-left: auto; margin-right: auto;">
+                    Join the AI revolution. Stop wasting time and money on slow, manual ML development.
+                    Start building production-ready models in hours, not months.
+                </p>
+
+                <div style="background: rgba(66, 133, 244, 0.1); border: 2px solid var(--google-blue); border-radius: 16px; padding: 28px; margin: 35px 0; text-align: left;">
+                    <h4 class="heading-3" style="color: var(--google-blue); margin-bottom: 20px;">🎯 What You Get With Our 4-Week Pilot:</h4>
+                    <ul style="color: var(--text-muted); padding-left: 20px; line-height: 1.8; font-size: 0.9rem;">
+                        <li>Complete AutoML Agent setup on your Google Cloud infrastructure</li>
+                        <li>Direct integration with your existing BigQuery data</li>
+                        <li>One fully deployed ML model solving your real business problem</li>
+                        <li>Comprehensive training for your team</li>
+                        <li>Documented ROI and performance improvements</li>
+                        <li>Clear roadmap for scaling to additional use cases</li>
+                    </ul>
+                </div>
+
+                <div class="hero-cta" style="opacity:1; animation:none; margin-top: 45px;">
+                    <a href="mailto:contact@automl-agent.com?subject=🚀 Start 4-Week Pilot - AutoML Agent&body=Hi,%0D%0A%0D%0AI'm interested in starting a 4-week pilot of the AutoML Agent for our organization.%0D%0A%0D%0APlease provide information about:%0D%0A• Pilot project scope and timeline%0D%0A• Integration with our BigQuery infrastructure%0D%0A• Expected ROI and cost savings%0D%0A• Training and support included%0D%0A%0D%0ACompany: [Your Company]%0D%0AUse Case: [Brief description of what you want to predict]%0D%0AData Size: [Approximate number of records]%0D%0ACurrent ML Experience: [Beginner/Intermediate/Advanced]%0D%0A%0D%0ABest regards" class="cta-button cta-primary">
+                        <span>🎯 START 4-WEEK PILOT</span>
+                    </a>
+                    <a href="#demo" class="cta-button cta-secondary">
+                        <span>📊 Watch Demo Again</span>
+                    </a>
+                </div>
+
+                <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid rgba(66, 133, 244, 0.3);">
+                    <h4 class="heading-3" style="color: var(--text-primary); margin-bottom: 15px;">⚡ Low Risk, High Reward</h4>
+                    <p class="body-medium" style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+                        4-week pilot project. Fixed cost. Guaranteed results. If we don't deliver a working ML model
+                        that beats your current approach, you pay nothing.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="grid grid-4">
+                <div class="footer-section">
+                    <h4>AutoML Agent</h4>
+                    <p>AI That Builds AI</p>
+                    <p>Powered by Google Cloud Platform</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Solution</h4>
+                    <a href="#problem">The Problem</a>
+                    <a href="#solution">Our Solution</a>
+                    <a href="#process">How It Works</a>
+                    <a href="#roi">ROI Calculator</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Technology</h4>
+                    <a href="https://github.com/google/adk-samples/tree/main/python/agents/machine-learning-engineering">Open Source Code</a>
+                    <a href="#architecture">Architecture</a>
+                    <a href="#demo">Live Demo</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Get Started</h4>
+                    <a href="#contact">4-Week Pilot</a>
+                    <a href="mailto:contact@automl-agent.com">Schedule Demo</a>
+                    <p>Transform your data into insights</p>
+                </div>
+            </div>
+            <div style="text-align: center; border-top: 2px solid rgba(66, 133, 244, 0.3); padding-top: 30px; color: var(--text-muted); margin-top: 40px; font-size: 0.85rem;">
+                <p>&copy; 2025 AutoML Agent | Making AI Accessible to Everyone 🚀</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '14px',
+                darkMode: true,
+                background: 'transparent',
+                primaryColor: '#4285F4',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#1976d2',
+                lineColor: '#4285F4',
+                secondaryColor: '#34A853',
+                tertiaryColor: '#FBBC04'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile menu
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const navMenu = document.getElementById('navMenu');
+
+            mobileMenuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                mobileMenuToggle.classList.toggle('active');
+            });
+
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                });
+            });
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', () => {
+                const navbar = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Counter animation
+            function animateCounter(element, target, duration = 2000) {
+                let start = 0;
+                const increment = target / (duration / 16);
+                const isPercent = element.textContent.includes('%');
+                const isDollar = element.textContent.includes('$');
+                const isFloat = target.toString().includes('.');
+                const isPlus = element.textContent.includes('+');
+                const isX = element.textContent.includes('X');
+
+                const timer = setInterval(() => {
+                    start += increment;
+                    if (start >= target) {
+                        start = target;
+                        clearInterval(timer);
+                    }
+
+                    let displayValue = isFloat ? start.toFixed(1) : Math.floor(start).toString();
+
+                    if (isDollar) {
+                        displayValue = '$' + displayValue + (target >= 1000 ? 'K' : '');
+                    } else if (isPercent) {
+                        displayValue = displayValue + '%';
+                    } else if (isPlus) {
+                        displayValue = '+' + displayValue + '%';
+                    } else if (isX) {
+                        displayValue = displayValue + 'X';
+                    }
+
+                    element.textContent = displayValue;
+                }, 16);
+            }
+
+            // Intersection observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+
+                        if (entry.target.classList.contains('stat-item')) {
+                            const numberElement = entry.target.querySelector('.stat-number');
+                            const target = parseFloat(numberElement.getAttribute('data-target'));
+
+                            setTimeout(() => {
+                                animateCounter(numberElement, target);
+                            }, Math.random() * 500);
+
+                            observer.unobserve(entry.target);
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe elements
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
